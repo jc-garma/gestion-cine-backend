@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class City implements Serializable {
 
@@ -18,6 +20,7 @@ public class City implements Serializable {
 	private String name;
 
 	@OneToMany(mappedBy = "city")
+	@JsonIgnore
 	private Collection<Cinema> cinemas;
 
 	public City() {

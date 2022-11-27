@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 
+import com.gestion.cine.dao.CityRepository;
+import com.gestion.cine.dto.Cinema;
+import com.gestion.cine.dto.City;
 import com.gestion.cine.dao.FilmRepository;
 import com.gestion.cine.dao.TicketRepository;
 import com.gestion.cine.dto.Film;
@@ -18,13 +21,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-//@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*")
 public class CinemaController {
 	@Autowired
 	private FilmRepository filmRepository;
 
 	@Autowired
 	private TicketRepository ticketRepository;
+	
+	@Autowired
+	private CityRepository cityRepository;
 	
 	
 	@GetMapping("findAllFilms")
@@ -46,6 +52,22 @@ public class CinemaController {
 	@GetMapping("findTicketById/{id}")
 	public Ticket findTicketById(@PathVariable(name = "id") Long id){
 		return ticketRepository.findById(id).orElse(null);
+	}
+	
+	@GetMapping("findAllCities")
+	public List<City> findAllCities(){
+		return cityRepository.findAll();
+	}
+	
+	@GetMapping("findAllCinemasByIdCity/{id}")
+	public List<Cinema> findAllCinemasByIdCity(@PathVariable(name = "id") Long id){
+		List<Cinema> cinemas = new ArrayList<Cinema>();
+		City cityE = cityRepository.findById(id).orElse(null);
+		cityE.getCinemas().forEach(cinema -> {
+			cinemas.add(cinema);
+		});
+		
+		return cinemas;
 	}
 	
 	//Método que permitirá pagar uno o varios tickets, es decir, asignar un nameclient y un codepayment, inicialmente a 0 y null, a cada objeto Ticket ya generado.
